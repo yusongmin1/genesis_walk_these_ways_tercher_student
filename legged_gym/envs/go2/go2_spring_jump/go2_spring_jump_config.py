@@ -81,7 +81,7 @@ class GO2_SpringJumpCfg(LeggedRobotCfg):
             before_setting=2.
             line_z=5.
             flight=1.
-            base_height_flight=2.
+            base_height_flight=2.5
             base_height_stance=-10
             orientation=1.5
             dof_pos=-0.1
@@ -94,7 +94,7 @@ class GO2_SpringJumpCfg(LeggedRobotCfg):
             collision=-1.
             action_rate=-0.01
             feet_contact_forces=-0.1
-            land_pos=7.
+            land_pos=8
             tracking_lin_vel=0.5
             line_vel_stance=-0.5
             foot_clearance=-1
@@ -168,6 +168,6 @@ class GO2_SpringJumpCfgPPO(LeggedRobotCfgPPO):
         run_name = 'step_gait'
         experiment_name = 'GO2_SPRING_JUMP'
         save_interval = 100
-        load_run = "Oct15_07-39-24_step_gait"
+        load_run = "Oct15_18-58-42_step_gait"
         checkpoint = -1
         max_iterations = 20000

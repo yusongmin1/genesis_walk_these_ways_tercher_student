@@ -270,7 +270,7 @@ class GO2_SpringJump(LeggedRobot):
 
     def _reward_base_height_flight(self):
         #跳跃的高度奖励
-        base_height_flight = (self.simulator.base_pos[:, 2] - 0.47)
+        base_height_flight = (self.simulator.base_pos[:, 2] - 0.5)
         rew= torch.exp(-torch.abs(base_height_flight)*5)*(self.was_in_flight)*~self.has_jumped*6
         return rew 
     

@@ -57,6 +57,6 @@ Please refer to the [doc of this repo](https://genesis-lr.readthedocs.io/en/late
 
 export SETUPTOOLS_USE_DISTUTILS=stdlib
 
- python scripts/play_ts.py --task=go2_ts
+ python scripts/play.py --task=go2_spring_jump
 
  python scripts/train.py --task=go2_ee --headless
