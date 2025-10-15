@@ -46,16 +46,23 @@ from legged_gym.envs.go2.go2_ee.go2_ee_config import Go2EECfg, Go2EECfgPPO
 # from legged_gym.envs.bipedal_walker.bipedal_walker_config import BipedalWalkerCfg, BipedalWalkerCfgPPO
 # from legged_gym.envs.bipedal_walker.bipedal_walker import BipedalWalker
 # # go2_sysid
-# from legged_gym.envs.go2.go2_sysid.go2_sysid import GO2SysID
-# from legged_gym.envs.go2.go2_sysid.go2_sysid_config import GO2SysIDCfg
+from legged_gym.envs.go2.go2_sysid.go2_sysid import GO2SysID
+from legged_gym.envs.go2.go2_sysid.go2_sysid_config import GO2SysIDCfg
 
+# go2_spring_jump
+from legged_gym.envs.go2.go2_spring_jump.go2_spring_jump import GO2_SpringJump
+from legged_gym.envs.go2.go2_spring_jump.go2_spring_jump_config import GO2_SpringJumpCfg, GO2_SpringJumpCfgPPO
+
+
+# go2_spring_jump
 
 from legged_gym.utils.task_registry import task_registry
+task_registry.register( "go2_spring_jump", GO2_SpringJump, GO2_SpringJumpCfg(), GO2_SpringJumpCfgPPO())
 
 task_registry.register( "go2", GO2, GO2Cfg(), GO2CfgPPO())
 task_registry.register( "go2_wtw", GO2WTW, GO2WTWCfg(), GO2WTWCfgPPO())
 task_registry.register( "go2_ts", Go2TS, Go2TSCfg(), Go2TSCfgPPO())
 task_registry.register( "go2_ee", Go2EE, Go2EECfg(), Go2EECfgPPO())
 print("注册的任务:  ",task_registry.task_classes)
-# task_registry.register( "go2_sysid", GO2SysID, GO2SysIDCfg(), GO2CfgPPO())
+task_registry.register( "go2_sysid", GO2SysID, GO2SysIDCfg(), GO2CfgPPO())
 # task_registry.register( "bipedal_walker", BipedalWalker, BipedalWalkerCfg(), BipedalWalkerCfgPPO())

@@ -51,6 +51,7 @@ def play(args):
     # prepare environment
     env, _ = task_registry.make_env(name=args.task, args=args, env_cfg=env_cfg)
     env.reset()
+    print(type(env.get_observations()))
     obs_buf, privileged_obs_buf, obs_history, critic_obs = env.get_observations()
     # load policy
     train_cfg.runner.resume = True

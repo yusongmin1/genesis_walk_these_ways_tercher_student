@@ -25,6 +25,7 @@ def play(args):
     env_cfg.env.debug = True
     env_cfg.env.episode_length_s = 5.0
     env_cfg.noise.add_noise = True
+    env_cfg.domain_rand.push_towards_goal=False
 
     # prepare environment
     env, _ = task_registry.make_env(name=args.task, args=args, env_cfg=env_cfg)
@@ -56,6 +57,9 @@ def play(args):
         # print("base yaw angle: ", env.base_euler[robot_index, 2].item())
         # print("base height: ", env.base_pos[robot_index, 2].cpu().numpy())
         # print("foot_height: ", env.link_pos[robot_index, env.feet_indices, 2].cpu().numpy())
+        # print("prob: ", env.prob)
+        # print(env.simulator.dof_pos[0])
+        print(env.was_in_flight[0],env.has_jumped[0])
         
         if i < stop_state_log:
             logger.log_states(

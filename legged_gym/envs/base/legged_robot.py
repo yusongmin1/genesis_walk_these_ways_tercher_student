@@ -33,6 +33,8 @@ class LeggedRobot(BaseTask):
         self._init_buffers()
         self._prepare_reward_function()
         self.init_done = True
+        self.count=0
+        self.prob=8
 
     def step(self, actions):
         """ Apply actions, simulate, call self.post_physics_step()
@@ -305,6 +307,7 @@ class LeggedRobot(BaseTask):
         self.commands[env_ids, :2] *= (torch.norm(
             self.commands[env_ids, :2], dim=1) > 0.2).unsqueeze(1)
 
+
     def update_command_curriculum(self, env_ids):
         """ Implements a curriculum of increasing commands
 
@@ -313,13 +316,13 @@ class LeggedRobot(BaseTask):
         """
         # If the tracking reward is above 80% of the maximum, increase the range of commands
         if torch.mean(self.episode_sums["tracking_lin_vel"][env_ids]) / self.max_episode_length > \
-                self.cfg.commands.curriculum_threshold * self.reward_scales["tracking_lin_vel"] and self.num_gaits==4:
+                self.cfg.commands.curriculum_threshold * self.reward_scales["tracking_lin_vel"]:# and self.num_gaits==4:
             self.command_ranges["lin_vel_x"][0] = np.clip(
                 self.command_ranges["lin_vel_x"][0] - 0.5, -self.cfg.commands.max_curriculum, 0.)
             self.command_ranges["lin_vel_x"][1] = np.clip(
                 self.command_ranges["lin_vel_x"][1] + 0.5, 0., self.cfg.commands.max_curriculum)
         if torch.mean(self.episode_sums["tracking_ang_vel"][env_ids]) / self.max_episode_length > \
-                self.cfg.commands.curriculum_threshold * self.reward_scales["tracking_ang_vel"] and self.num_gaits==4:
+                self.cfg.commands.curriculum_threshold * self.reward_scales["tracking_ang_vel"]:# and self.num_gaits==4:
             self.command_ranges["ang_vel_yaw"][0] = np.clip(
                 self.command_ranges["ang_vel_yaw"][0] - 0.5, -self.cfg.commands.max_curriculum, 0.)
             self.command_ranges["ang_vel_yaw"][1] = np.clip(
@@ -366,6 +369,8 @@ class LeggedRobot(BaseTask):
         self.forward_vec[:, 0] = 1.0
         self.commands = torch.zeros(
             (self.num_envs, self.cfg.commands.num_commands), device=self.device, dtype=torch.float)
+        self.command = torch.zeros(
+            (self.num_envs, 3), device=self.device, dtype=torch.float)
         self.commands_scale = torch.tensor([self.obs_scales.lin_vel, self.obs_scales.lin_vel, self.obs_scales.ang_vel],
                                            device=self.device, dtype=torch.float,
                                            requires_grad=False)
@@ -387,6 +392,13 @@ class LeggedRobot(BaseTask):
                 self.num_envs, self.cfg.domain_rand.ctrl_delay_step_range[1]+1, self.num_actions, dtype=torch.float, device=self.device, requires_grad=False)
             self.action_delay = torch.randint(self.cfg.domain_rand.ctrl_delay_step_range[0],
                                               self.cfg.domain_rand.ctrl_delay_step_range[1]+1, (self.num_envs,), device=self.device, requires_grad=False)
+        self.last_contacts = torch.zeros(self.num_envs, 4, dtype=torch.bool, device=self.device, requires_grad=False)
+        self.was_in_flight = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device, requires_grad=False)
+        self.has_jumped = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device, requires_grad=False)
+        self.landing_poses = torch.zeros(self.num_envs, 2, dtype=torch.float, device=self.device, requires_grad=False)
+        self.not_pushed_up = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device, requires_grad=False)
+        self.not_pushed_rotot = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device, requires_grad=False)
+        self.max_height = torch.zeros(self.num_envs, dtype=torch.float32, device=self.device, requires_grad=False)
 
     def _prepare_reward_function(self):
         """ Prepares a list of reward functions, whcih will be called to compute the total reward.

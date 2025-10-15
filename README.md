@@ -54,3 +54,9 @@ Please refer to the [doc of this repo](https://genesis-lr.readthedocs.io/en/late
 - [x] Add go2 deploy demos and instructions (2025/07/25)
 - [ ] Add explicit estimator support
 - [x] Add teacher-student implementation (2025/08/02)
+
+export SETUPTOOLS_USE_DISTUTILS=stdlib
+
+ python scripts/play_ts.py --task=go2_ts
+
+ python scripts/train.py --task=go2_ee --headless

@@ -196,6 +196,7 @@ class GenesisSimulator(Simulator):
         # dof position limits
         self.dof_pos_limits = torch.stack(
             self.robot.get_dofs_limit(self.motors_dof_idx), dim=1)
+
         self.torque_limits = self.robot.get_dofs_force_range(self.motors_dof_idx)[
             1]
         for i in range(self.dof_pos_limits.shape[0]):
@@ -267,7 +268,7 @@ class GenesisSimulator(Simulator):
         self.feet_vel = torch.zeros(
             (self.num_envs, len(self.feet_indices), 3), device=self.device, dtype=torch.float
         )
-        
+        self.init_state=torch.zeros_like(self.base_pos)
         # Terrain information around feet
         if self.cfg.terrain.obtain_terrain_info_around_feet:
             self.normal_vector_around_feet = torch.zeros(
@@ -303,6 +304,31 @@ class GenesisSimulator(Simulator):
         # PD control params
         self.robot.set_dofs_kp(self.p_gains, self.motors_dof_idx)
         self.robot.set_dofs_kv(self.d_gains, self.motors_dof_idx)
+
+    # def update_cmd_action_latency_buffer(self):
+    #     actions_scaled = self.actions * self.cfg.control.action_scale
+    #     if self.cfg.domain_rand.add_cmd_action_latency:
+    #         self.cmd_action_latency_buffer[:,:,1:] = self.cmd_action_latency_buffer[:,:,:self.cfg.domain_rand.range_cmd_action_latency[1]].clone()
+    #         self.cmd_action_latency_buffer[:,:,0] = actions_scaled.clone()
+    #         action_delayed = self.cmd_action_latency_buffer[torch.arange(self.num_envs),:,self.cmd_action_latency_simstep.long()]
+    #     else:
+    #         action_delayed = actions_scaled
+        
+    #     return action_delayed
+
+    # def update_obs_latency_buffer(self):
+    #     if self.cfg.domain_rand.randomize_obs_motor_latency:
+    #         q = (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos
+    #         dq = self.dof_vel * self.obs_scales.dof_vel
+    #         self.obs_motor_latency_buffer[:,:,1:] = self.obs_motor_latency_buffer[:,:,:self.cfg.domain_rand.range_obs_motor_latency[1]].clone()
+    #         self.obs_motor_latency_buffer[:,:,0] = torch.cat((q, dq), 1).clone()
+    #     if self.cfg.domain_rand.randomize_obs_imu_latency:
+    #         self.gym.refresh_actor_root_state_tensor(self.sim)
+    #         self.base_quat[:] = self.root_states[:, 3:7]
+    #         self.base_ang_vel[:] = quat_rotate_inverse(self.base_quat, self.root_states[:, 10:13])
+    #         self.base_euler_xyz = get_euler_xyz_tensor(self.base_quat)
+    #         self.obs_imu_latency_buffer[:,:,1:] = self.obs_imu_latency_buffer[:,:,:self.cfg.domain_rand.range_obs_imu_latency[1]].clone()
+    #         self.obs_imu_latency_buffer[:,:,0] = torch.cat((self.base_ang_vel * self.obs_scales.ang_vel, self.base_euler_xyz * self.obs_scales.quat), 1).clone()
 
     def step(self, actions):
         """Simulator steps, receiving actions from the agent"""
@@ -598,7 +624,7 @@ class GenesisSimulator(Simulator):
 
         # update projected gravity
         self.projected_gravity = quat_rotate_inverse(self.base_quat, self.global_gravity)
-
+        self.init_state[env_ids] = self.base_pos[env_ids]
         # reset root states - velocity
         self.base_lin_vel[env_ids] = (
             torch_rand_float(-0.5, 0.5, (len(env_ids), 3), self.device))
@@ -996,7 +1022,7 @@ class IsaacGymSimulator(Simulator):
         self.base_lin_vel = quat_rotate_inverse(self.base_quat, self.root_states[:, 7:10])
         self.base_ang_vel = quat_rotate_inverse(self.base_quat, self.root_states[:, 10:13])
         self.projected_gravity = quat_rotate_inverse(self.base_quat, self.global_gravity)
-        
+
         # Terrain information around feet
         if self.cfg.terrain.obtain_terrain_info_around_feet:
             self.normal_vector_around_feet = torch.zeros(

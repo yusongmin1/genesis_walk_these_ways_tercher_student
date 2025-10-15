@@ -55,13 +55,13 @@ class TSRunner:
         self.alg_cfg = train_cfg["algorithm"]
         self.policy_cfg = train_cfg["policy"]
         self.all_cfg = train_cfg
-        self.wandb_run_name = (
-            self.cfg["experiment_name"]
-            + "_"
-            + datetime.now().strftime("%b%d_%H-%M-%S")
-            + "_"
-            + self.cfg["run_name"]
-        )
+        # self.wandb_run_name = (
+        #     self.cfg["experiment_name"]
+        #     + "_"
+        #     + datetime.now().strftime("%b%d_%H-%M-%S")
+        #     + "_"
+        #     + self.cfg["run_name"]
+        # )
         self.device = device
         self.env = env
         actor_critic_class = eval(self.cfg["policy_class_name"]) # ActorCriticTS

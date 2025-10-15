@@ -7,7 +7,7 @@ class LeggedRobotCfg(BaseConfig):
         num_privileged_obs = None # if not None a priviledge_obs_buf will be returned by step() (critic obs for assymetric training). None is returned otherwise 
         num_actions = 12
         send_timeouts = True # send time out information to the algorithm
-        episode_length_s = 20 # episode length in seconds
+        episode_length_s = 5 # episode length in seconds
         debug = False # if debugging, visualize contacts, etc.
         env_spacing = 1.0
 

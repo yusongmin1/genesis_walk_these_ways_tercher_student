@@ -166,6 +166,6 @@ class Go2TSCfgPPO( LeggedRobotCfgPPO ):
         run_name = 'gs'
         experiment_name = 'go2_rough'
         save_interval = 500
-        load_run = "Sep28_22-55-11_gs"
+        load_run = "Oct09_18-10-53_gs"
         checkpoint = -1
-        max_iterations = 2500
+        max_iterations = 25000

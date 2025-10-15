@@ -13,7 +13,7 @@ class Go2EECfg( LeggedRobotCfg ):
         # privileged_obs here is actually critic_obs
         num_actions = 12
         env_spacing = 0.5
-    
+        episode_length_s = 20 # episode length in seconds
     class terrain( LeggedRobotCfg.terrain ):
         mesh_type = "heightfield" # for genesis
         # mesh_type = "trimesh"  # for isaacgym
@@ -109,10 +109,12 @@ class Go2EECfg( LeggedRobotCfg ):
             action_rate = -0.01
             action_smoothness = -0.01
             torques = -2.e-4
+            base_height=-1.0
             # gait
             feet_air_time = 1.0
             foot_clearance = 0.2
             stand_still = -0.5
+            dof_pos=-0.02
 
     class commands( LeggedRobotCfg.commands ):
         curriculum = True
@@ -162,6 +164,6 @@ class Go2EECfgPPO( LeggedRobotCfgPPO ):
         run_name = 'gs'
         experiment_name = 'go2_rough'
         save_interval = 500
-        load_run = "Sep29_10-38-04_gs"
+        load_run = "Oct13_12-14-29_gs"
         checkpoint = -1
-        max_iterations = 2500
+        max_iterations = 30000

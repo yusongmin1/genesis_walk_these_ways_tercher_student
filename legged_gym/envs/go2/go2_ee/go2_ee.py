@@ -289,3 +289,10 @@ class Go2EE(LeggedRobot):
             self.simulator.dof_pos[:, hip_joint_indices] - 
             self.simulator.default_dof_pos[:, hip_joint_indices]), dim=-1)
         return dof_pos_error
+    def _reward_dof_pos(self):
+        """ Reward for the hip joint position close to default position
+        """
+        dof_pos_error = torch.sum(torch.square(
+            self.simulator.dof_pos - 
+            self.simulator.default_dof_pos), dim=-1)
+        return dof_pos_error

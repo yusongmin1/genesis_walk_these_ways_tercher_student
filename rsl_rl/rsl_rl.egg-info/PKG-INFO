@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: rsl_rl
+Version: 1.0.0
+Summary: my_unitree_go2_gym
+Author: Unitree Robotics
+Author-email: 1902219511@qq.com
+License: BSD-3-Clause
+Requires-Dist: pyyaml
